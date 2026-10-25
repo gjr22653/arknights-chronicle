@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>明日方舟 · 编年史</title>
+<style>
+  :root{
+    --bg:#0f1216;--bg2:#161a20;--card:#1b2027;--line:#282f38;
+    --tx:#e5e8ed;--tx2:#98a2ae;--tx3:#68717c;
+    --acc:#d9a13f;--red:#d9584f;--grn:#63a97a;--blu:#5b93c9;--pur:#9a7ec7;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--tx);
+    font:15px/1.75 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif}
+  .wrap{max-width:1020px;margin:0 auto;padding:26px 18px 80px}
+
+  header{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:20px}
+  h1{margin:0 0 5px;font-size:25px}
+  h1 b{color:var(--acc)}
+  .sub{color:var(--tx2);font-size:13px}
+  .stats{margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--tx3)}
+  .stats i{color:var(--acc);font-style:normal;font-weight:700}
+
+  .toolbar{position:sticky;top:0;z-index:40;background:rgba(15,18,22,.96);
+    padding:12px 0 10px;border-bottom:1px solid var(--line);margin-bottom:18px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  #q{flex:1 1 240px;background:var(--bg2);border:1px solid var(--line);color:var(--tx);
+    border-radius:8px;padding:10px 12px;font:inherit;outline:none;min-width:0}
+  #q:focus{border-color:var(--acc)}
+  #q::placeholder{color:var(--tx3)}
+  .btn{background:var(--bg2);border:1px solid var(--line);color:var(--tx2);
+    border-radius:8px;padding:9px 13px;cursor:pointer;font:inherit;font-size:13px;white-space:nowrap}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .btn.on{background:var(--acc);border-color:var(--acc);color:#131619;font-weight:700}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .chip{background:transparent;border:1px solid var(--line);color:var(--tx2);
+    border-radius:999px;padding:4px 11px;font-size:12.5px;cursor:pointer;user-select:none}
+  .chip:hover{border-color:var(--acc);color:var(--tx)}
+  .chip.on{background:var(--acc);border-color:var(--acc);color:#131619;font-weight:700}
+  .hint{margin-top:8px;font-size:12px;color:var(--tx3)}
+  .hint b{color:var(--tx2)}
+
+  h2.sec{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--acc);
+    margin:28px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;gap:10px}
+  h2.sec small{font-size:11.5px;color:var(--tx3);font-weight:400;letter-spacing:0}
+
+  .it{background:var(--card);border:1px solid var(--line);border-radius:9px;
+    padding:12px 14px;margin-bottom:7px;cursor:pointer}
+  .it:hover{border-color:#39424e}
+  .it.open{border-color:var(--acc)}
+  .l1{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+  .k{font-size:11px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;
+    padding:0 5px;white-space:nowrap}
+  .k.main{color:var(--acc);border-color:#4a3a1e}
+  .k.ss{color:var(--grn);border-color:#26402f}
+  .k.story{color:var(--blu);border-color:#1f3448}
+  .k.is{color:var(--pur);border-color:#3a2f52}
+  .k.lore{color:var(--tx3)}
+  .nm{font-size:15.5px;font-weight:700}
+  .nm mark{background:rgba(217,161,63,.3);color:var(--acc);border-radius:2px;padding:0 1px}
+  .mt{margin-left:auto;font-size:11.5px;color:var(--tx3);white-space:nowrap}
+  .sm{margin-top:5px;font-size:13.5px;color:var(--tx2);line-height:1.7}
+  .sm mark{background:rgba(217,161,63,.3);color:var(--acc)}
+  .dt{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:none}
+  .it.open .dt{display:block}
+  .dt p{margin:0 0 6px;padding-left:13px;position:relative;font-size:13.5px}
+  .dt p::before{content:"";position:absolute;left:0;top:9px;width:4px;height:4px;
+    border-radius:50%;background:var(--acc)}
+  .dt p.key::before{background:var(--red)}
+  .lbl{font-size:11px;color:var(--tx3);letter-spacing:1px;margin:10px 0 5px}
+  .cc{display:flex;gap:5px;flex-wrap:wrap}
+  .cc span{font-size:12.5px;border:1px solid var(--line);border-radius:5px;
+    padding:2px 8px;cursor:pointer;color:var(--tx2)}
+  .cc span:hover{border-color:var(--acc);color:var(--acc)}
+  .meta{font-size:12px;color:var(--tx3);margin-top:8px}
+
+  .regiongrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:9px;
+    padding:12px 14px;cursor:pointer}
+  .rcard:hover{border-color:var(--acc)}
+  .rcard b{font-size:14.5px}
+  .rcard div{font-size:12px;color:var(--tx3);margin-top:3px}
+
+  #panel{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:none}
+  #panel.show{display:block}
+  .pbox{position:absolute;right:0;top:0;bottom:0;width:min(440px,92vw);
+    background:var(--bg2);border-left:1px solid var(--line);overflow:auto;padding:22px 20px 60px}
+  .pclose{position:absolute;right:14px;top:12px;cursor:pointer;color:var(--tx3);
+    font-size:20px;line-height:1;border:none;background:none}
+  .pclose:hover{color:var(--acc)}
+  .pname{font-size:21px;font-weight:800;margin:0 0 2px}
+  .pinfo{font-size:12.5px;color:var(--tx3);margin-bottom:14px}
+  .prow{display:flex;gap:10px;font-size:13.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+  .prow b{width:64px;color:var(--tx3);font-weight:400;flex:none}
+  .pdesc{font-size:13.5px;line-height:1.8;margin-top:12px;color:var(--tx2)}
+  .pitems{margin-top:8px}
+  .pitems div{font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .pitems div:hover{color:var(--acc)}
+
+  .dt p.ev{cursor:pointer;border-radius:4px;margin-left:-4px;padding-left:17px;padding-right:4px}
+  .dt p.ev:hover{background:rgba(217,161,63,.10)}
+  a.bli{color:var(--acc);text-decoration:none;border-bottom:1px dotted rgba(217,161,63,.5)}
+  a.bli:hover{color:#fff}
+  a.blibtn{display:block;text-align:center;padding:10px;border:1px solid var(--acc);border-radius:8px;
+    color:var(--acc);text-decoration:none;font-size:13.5px}
+  a.blibtn:hover{background:var(--acc);color:#131619}
+  a.blibtn.ghost{border-color:var(--line);color:var(--tx2)}
+  a.blibtn.ghost:hover{background:var(--line);color:#fff}
+  .empty{text-align:center;color:var(--tx3);padding:50px 0;font-size:13.5px}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--tx3);line-height:1.95}
+  footer b{color:var(--tx2)}
+  @media (max-width:560px){
+    .wrap{padding:16px 12px 60px} h1{font-size:20px}
+    .mt{width:100%;margin-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>明日方舟 · <b>编年史</b></h1>
+  <div class="sub">主线 · 支线 · 故事集 · 集成战略 · 背景事件。年份不明的单列；点人物看详情。</div>
+  <div class="stats">
+    <span>条目 <i id="s0">–</i></span>
+    <span>主线 <i id="s1">–</i></span>
+    <span>支线 <i id="s2">–</i></span>
+    <span>故事集 <i id="s3">–</i></span>
+    <span>肉鸽 <i id="s4">–</i></span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="row">
+    <input id="q" placeholder="搜：凯尔希 / 1098 / 深海 / 孤星 / 肉鸽 / 谢拉格" autocomplete="off">
+    <button class="btn" id="vChron">编年</button>
+    <button class="btn" id="vRegion">地区</button>
+    <button class="btn" id="vChar">人物</button>
+    <button class="btn" id="clr">清除</button>
+  </div>
+  <div class="chips" id="types"></div>
+  <div class="chips" id="years"></div>
+  <div class="hint" id="hint">点条目展开详情；点人名看人物卡。</div>
+</div>
+
+<main id="main"></main>
+<div id="charbox" style="display:none"></div>
+
+<footer>
+  <b>年份</b>：主线与部分活动采用泰拉历（Arknights Terra Wiki 年表，1090–1100）。官方从未公布全部活动的剧情年份，无法定位的一律标「年份不明」，不做推测。<br>
+  <b>上线时间</b>：支线/故事集标注国服上线日期（biligame wiki 活动一览）。<br>
+  <b>剧情简介</b>：主线与重点活动写得较细；部分活动只保留定位性说明并标「待补」，不编造细节。<br>
+  <b>肉鸽</b>：收录集成战略全部主题的剧情梗概。<br>
+  <b>免责</b>：活动剧情年份多属考据，若与游戏内原文冲突以原文为准。
+</footer>
+
+</div>
+
+<div id="panel"><div class="pbox"><button class="pclose" id="pclose">×</button><div id="pbody"></div></div></div>
+
+<script>
+/* ============ 数据 ============ */
+/* type: main 主线 | ss 支线 | story 故事集 | is 肉鸽 | lore 背景 */
+const D = [
+/* ---- 背景 ---- */
+{type:'lore', y:1090, t:'卡兹戴尔内战', when:'1090–1094', region:'卡兹戴尔',
+ sum:'军事委员会与 Babel 因理念分歧全面开战。战争期间，凯尔希与特蕾西娅深入罗德岛号，唤醒了石棺中的“Oracle”——也就是后来的博士。',
+ ev:['内战线持续四年，双方都在争夺“萨卡兹的未来”的定义权','博士以“Oracle”之名被唤醒，成为特蕾西娅与凯尔希最后的赌注'],
+ chars:['凯尔希','特蕾西娅','博士']},
+{type:'lore', y:1090, t:'喀兰贸易成立 · 银灰归国', when:'1090', region:'谢拉格',
+ sum:'恩希欧迪斯（银灰）结束维多利亚留学归国，说服大长老打开国门，创立喀兰贸易，成为谢拉格唯一的对外窗口，也让希瓦艾什家重回三族核心。',
+ ev:['谢拉格结束封闭，首次对外通商'], chars:['银灰','初雪','崖心']},
+{type:'lore', y:1090, t:'整合运动建立', when:'约 1090–1095', region:'乌萨斯',
+ sum:'塔露拉与阿丽娜在北乌萨斯冻原创立整合运动，以感染者反抗为旗号。后来吸收爱国者的盾卫与霜星的雪怪小队，一度是感染者最后的希望。但接连的悲剧与内部激进化，把它推向了针对平民的暴力组织。',
+ ev:['吸收盾卫与雪怪小队，成为乌萨斯最大的感染者武装','后期路线激进化，性质彻底改变'],
+ chars:['塔露拉','霜星','爱国者','阿丽娜']},
+{type:'lore', y:1092, t:'德州家族清洗', when:'1092', region:'哥伦比亚',
+ sum:'为镇压朱塞佩·德州发起的反叛，西西里夫人派出“十二家族”清洗了曾经显赫的德州家族。切利尼娜·德州成为唯一幸存者，此后隐姓埋名。',
+ chars:['德克萨斯']},
+{type:'lore', y:1094, t:'特蕾西娅遇刺 · 罗德岛成立', when:'1094 秋', region:'卡兹戴尔', key:true,
+ sum:'特雷西斯趁 Babel 全军出征、本土空虚之机发动斩首突袭。特蕾西娅死亡，博士陷入昏迷并被凯尔希放入切尔诺伯格石棺，阿米娅继承黑王冠成为魔王。残部重组为医药公司“罗德岛”，以此作为特蕾西娅遗志的掩护。',
+ ev:['★ Babel 被斩首，特蕾西娅死亡','★ 博士昏迷进入石棺，阿米娅成为魔王','幸存者重组为罗德岛，以医药公司为表'],
+ chars:['特蕾西娅','特雷西斯','阿米娅','凯尔希','博士']},
+{type:'lore', y:1094, t:'卡兹戴尔占领伦蒂尼姆', when:'1094 秋', region:'维多利亚',
+ sum:'受卡文迪什公爵之邀，特雷西斯率军事委员会进驻伦蒂尼姆，以“平叛”为名控制维多利亚首都。蒸汽骑士被清算，议会沦为傀儡，维多利亚的王位继承危机被无限延长。',
+ ev:['特雷西斯入驻西哈勒格宫，以伦蒂尼姆为据点遥控卡兹戴尔'], chars:['特雷西斯','曼弗雷德']},
+
+/* ---- 主线 ---- */
+{type:'main', y:1096, t:'序章 黑暗时代·序', when:'1096-12-23', region:'乌萨斯', cn:'2019-05', key:true,
+ sum:'整合运动攻占切尔诺伯格当天，罗德岛发动营救，把博士从石棺中取出。博士完全失忆，连自己的名字都不记得，只留下“指挥”这一项本能。这是整个故事的起点，也是所有悬念的源头。',
+ ev:['★ 博士苏醒，失忆','整合运动控制切城，天灾将至','首次出现“魔王”与黑王冠的伏笔'],
+ chars:['博士','阿米娅','凯尔希','杜宾']},
+{type:'main', y:1096, t:'第一章 黑暗时代·上', when:'1096-12', region:'乌萨斯', cn:'2019-05',
+ sum:'切城突围。罗德岛在整合运动的包围中强行开路，博士第一次以指挥官身份调度干员。W 以雇佣兵身份登场，她的真实立场要等到维多利亚篇才揭晓。',
+ ev:['突围战，博士首次指挥','W 登场，立场不明'],
+ chars:['阿米娅','凯尔希','博士','W']},
+{type:'main', y:1096, t:'第二章 黑暗时代·下', when:'1096-12', region:'乌萨斯', cn:'2019-05', key:true,
+ sum:'天灾降临，切尔诺伯格城市崩坏。米莎与碎骨这条线在此展开并走向悲剧——为了活下去，人可以先放弃什么。罗德岛带幸存者撤向龙门。',
+ ev:['★ 天灾摧毁切城','米莎／碎骨的悲剧线','罗德岛撤离，转向龙门'],
+ chars:['阿米娅','米莎','碎骨']},
+{type:'main', y:1096, t:'第三章 二次呼吸', when:'1096-12 ~ 1097-01', region:'龙门', cn:'2019-05', key:true,
+ sum:'罗德岛转进龙门，龙门近卫局登场。与魏彦吾一方建立合作后，龙门成为第二舞台。这一章完成了从“逃”到“介入城市政治”的转折。',
+ ev:['★ 龙门近卫局与陈、诗怀雅登场','与魏彦吾建立合作'], chars:['陈','诗怀雅','魏彦吾','阿米娅']},
+{type:'main', y:1097, t:'第四章 急性衰竭', when:'1097-01', region:'龙门', cn:'2019-05',
+ sum:'整合运动渗透龙门，近卫局与罗德岛联合作战。感染者在城市中的处境被正面摆上台面：驱逐、隔离、还是共存，龙门给不出答案。',
+ chars:['陈','诗怀雅','阿米娅']},
+{type:'main', y:1097, t:'第五章 靶向药物', when:'1097-01', region:'龙门', cn:'2019-06',
+ sum:'围绕矿石病药物与龙门封锁展开。米莎线收束，魏彦吾的立场、代价与两手准备被揭开——他不是坏人，但也不是好人。',
+ ev:['药物线推进，龙门封锁收紧','魏彦吾的真实考量曝光'], chars:['米莎','碎骨','魏彦吾','陈']},
+{type:'main', y:1097, t:'第六章 局部坏死', when:'1097-01', region:'龙门', cn:'2019-12', key:true,
+ sum:'阿米娅与塔露拉首次正面交锋。龙门危机升级为战争级别，双方都不再有退路。这一章确立了“塔露拉”作为全篇最大对手的分量。',
+ ev:['★ 阿米娅 vs 塔露拉首次正面'], chars:['塔露拉','阿米娅','陈']},
+{type:'main', y:1097, t:'第七章 苦难摇篮', when:'1097-01', region:'乌萨斯', cn:'2020-04', key:true,
+ sum:'罗德岛重返切尔诺伯格。霜星之死是全篇最重要的情感转折——整合运动在那之前是“敌人”，在那之后是“悲剧”。爱国者一方也随之动摇。',
+ ev:['★ 霜星之死','罗德岛重返切城','爱国者一方的抉择'], chars:['霜星','爱国者','阿米娅']},
+{type:'main', y:1097, t:'第八章 怒号光明', when:'1097-01-08', region:'乌萨斯', cn:'2020-11', key:true,
+ sum:'塔露拉决战，揭穿“卡谢娜／黑蛇”操控人心的机制：恶不是天生的，是被一点点诱导出来的。特蕾西娅与萨卡兹的线索在此浮出，切尔诺伯格—龙门危机（1096-12-23 至 1097-01-08）正式收束。',
+ ev:['★ 塔露拉决战','★ 揭穿黑蛇操控人心的真相','特蕾西娅与萨卡兹线索浮出','切尔诺伯格—龙门危机结束'],
+ chars:['塔露拉','W','阿米娅','凯尔希','卡谢娜']},
+{type:'main', y:1098, t:'第九章 风暴瞭望', when:'1098-01-02', region:'维多利亚', cn:'2021-09', key:true,
+ sum:'Hillock 暴行：驻军镇压塔拉人起义。罗德岛进入伦蒂尼姆，维多利亚篇开启。故事从“感染者问题”升级为“帝国如何解体”。',
+ ev:['★ Hillock 暴行（1098-01-02）','罗德岛进入伦蒂尼姆'], chars:['陈','阿米娅','汉娜','克洛维希娅']},
+{type:'main', y:1098, t:'第十章 破碎日冕', when:'1098-07 起', region:'维多利亚', cn:'2022-04', key:true,
+ sum:'萨卡兹王庭登场，特雷西斯掌控伦蒂尼姆。伦敦危机（1098-07-07 至 10-02）爆发。这一章把对手从“某个人”换成了“一整套秩序”。',
+ ev:['★ 萨卡兹王庭登场','★ 特雷西斯掌控伦蒂尼姆','伦敦危机爆发'], chars:['特雷西斯','曼弗雷德','阿斯卡纶','赫德雷']},
+{type:'main', y:1098, t:'第十一章 淬火尘霾', when:'1098-08 ~ 09', region:'维多利亚', cn:'2022-10',
+ sum:'伦蒂尼姆攻防战展开。罗德岛与自救军合作，城市内部的分裂与抵抗被逐一摊开。',
+ chars:['阿米娅','瓦斯汀','伊内丝']},
+{type:'main', y:1098, t:'第十二章 惊霆无声', when:'1098-09', region:'维多利亚', cn:'2023-04',
+ sum:'城市秩序崩塌，萨卡兹与自救军全面冲突。战线从城门推进到街区，平民成为最大的代价。',
+ chars:['特雷西斯','赫德雷','阿米娅','W']},
+{type:'main', y:1098, t:'第十三章 恶兆湍流', when:'1098-09-25 起', region:'维多利亚', cn:'2023-10', key:true,
+ sum:'伦蒂尼姆会战（09-25 至 10-02）。特蕾西娅相关真相被推进：她与魔王、与内化宇宙的关系，开始成为终局的核心线索。',
+ ev:['★ 伦蒂尼姆会战','特蕾西娅真相推进'], chars:['特蕾西娅','特雷西斯','阿米娅','W']},
+{type:'main', y:1098, t:'第十四章 慈悲灯塔', when:'1098-10-02', region:'维多利亚', cn:'2024-05', key:true,
+ sum:'普瑞赛斯登场，“内化宇宙”与“泰拉文明是否值得存续”正式摆上台面。特雷西斯启动 Amnannam，被阿斯卡纶刺杀；第一源石被取回，塔拉宣布独立。维多利亚篇以帝国崩解收尾。',
+ ev:['★★ 普瑞赛斯登场','特雷西斯启动 Amnannam 并被刺杀','第一源石被取回；塔拉独立'], chars:['普瑞赛斯','特蕾西娅','博士','凯尔希','特雷西斯']},
+{type:'main', y:1098, t:'第十五章 离解复合', when:'1098-10 中旬', region:'罗德岛', cn:'2025-04', key:true,
+ sum:'凯尔希为保护博士与阿米娅而牺牲，罗德岛本舰被封存，Mon3tr 以新形态重生。这是全篇最重的转折——罗德岛失去了定海神针，也第一次必须自己站起来。',
+ ev:['★★★ 凯尔希之死','罗德岛本舰封存','Mon3tr 以新形态重生'], chars:['凯尔希','Mon3tr','博士','阿米娅','可露希尔']},
+{type:'main', y:1099, t:'第十六章 反常光谱', when:'1099 秋', region:'乌萨斯', cn:'2025-10', key:true,
+ sum:'乌萨斯远北。圣愚“迦弗里伊尔”被沙皇处决，引发圣骏堡十年最大骚乱；源石主矿脉枯竭，帝国能源命脉被切断；政府对矿工的大规模屠杀被揭露。希尔达登场——她能消除痛苦，却让病征无痛结晶化。阿米娅动用黑王冠后出现力量失控前兆，普瑞赛斯向博士发出“辩论邀请”。',
+ ev:['★ 圣愚处决，圣骏堡骚乱','源石主矿脉枯竭','矿工屠杀曝光','希尔达登场','阿米娅力量失控前兆','普瑞赛斯的辩论邀请'],
+ chars:['阿米娅','博士','希尔达','塔露拉','特蕾西娅']},
+{type:'main', y:null, t:'第十七章 相变临界', when:'1099 末 ~ 1100 初（推定）', region:'乌萨斯', cn:'2026-05', key:true,
+ sum:'罗德岛为取回石棺深入乌萨斯权力漩涡。凯尔希复活——代价是放弃 AMa-10 不朽核心，从此只有一次生命。乌萨斯帝国议会在民意与腐朽贵族的撕裂中解散，第一集团军“工厂”的感染者实验曝光。普瑞赛斯在审视凯尔希万年记忆后下最后通牒：泰拉必须证明自己值得存续。',
+ ev:['★★★★ 凯尔希复活，代价是失去不朽','★★ 乌萨斯帝国议会解散','第一集团军“工厂”曝光','普瑞赛斯下最后通牒'],
+ chars:['凯尔希','博士','阿米娅','Mon3tr','可露希尔','费奥多尔','维特','塔露拉','普瑞赛斯']},
+
+/* ---- 支线 SideStory ---- */
+{type:'ss', y:null, t:'骑兵与猎人', cn:'2019-05-30', region:'卡西米尔',
+ sum:'格拉尼为寻找藏宝图与罗德岛同行，卷入卡西米尔边境的骑士与宝藏之争。系列早期建立“骑士竞技”氛围的作品。',
+ chars:['格拉尼']},
+{type:'ss', y:1097, t:'火蓝之心', cn:'2019-08-15', region:'汐斯塔', en:'Heart of Surging Flame',
+ sum:'汐斯塔黑曜石音乐节。表面是夏日庆典，底下是源石矿与地方势力的黑幕。罗德岛介入调查，揭出“音乐节背后的买卖”。',
+ chars:['阿米娅','博士']},
+{type:'ss', y:1097, t:'喧闹法则', cn:'2019-11-19', region:'龙门', en:'Code of Brawl',
+ sum:'萨乌因节的“恶作剧”。企鹅物流与龙门地下势力全员登场，一晚上的连锁误会。是龙门群像的入门篇。',
+ chars:['德克萨斯','能天使','陈','拜松']},
+{type:'ss', y:1095, t:'生于黑夜', cn:'2020-04-21', region:'卡兹戴尔', en:'Darknights Memoir',
+ sum:'巴别塔时期的往事：特蕾西娅、凯尔希、W 与萨卡兹内战。这一篇补完了“特蕾西娅为什么必须死”，是理解主线的关键前置。',
+ ev:['★ 巴别塔与军事委员会的对立','W 的过去与立场'], chars:['特蕾西娅','凯尔希','W','特雷西斯']},
+{type:'ss', y:1097, t:'沃伦姆德的薄暮', cn:'2020-07-09', region:'莱塔尼亚', en:'Twilight of Wolumonde',
+ sum:'沃伦姆德市民起义。罗德岛干员之死引发连锁暴动，源石技艺、感染者与城市治理正面碰撞。以“没有人是纯粹的坏人”著称。',
+ chars:['泥岩','赛雷娅','莱恩哈特']},
+{type:'ss', y:null, t:'密林悍将归来', cn:'2020-08-25', region:'萨尔贡', en:'The Great Chief Returns',
+ sum:'阿卡胡拉雨林的部落之王争夺。轻松向，但也埋下萨尔贡与源石的伏笔。',
+ chars:['嘉维尔','祖玛玛']},
+{type:'ss', y:1097, t:'玛莉娅·临光', cn:'2020-10-15', region:'卡西米尔', en:'Maria Nearl',
+ sum:'第 24 届卡西米尔特锦赛的前奏。玛莉娅为家族荣誉出赛，玛嘉烈（临光）结束流亡归来。卡西米尔“骑士竞技=资本游戏”的本质被揭开。',
+ chars:['玛莉娅','临光','玛恩纳']},
+{type:'ss', y:1097, t:'孤岛风云', cn:'2020-12-17', region:'哥伦比亚', en:'Mansfield Break',
+ sum:'安东尼·西蒙越狱。哥伦比亚监狱与人权、企业权力的黑色幽默，莱茵生命线的前置。',
+ chars:['安东尼','赛雷娅']},
+{type:'ss', y:null, t:'画中人', cn:'2021-02-05', region:'炎国', en:'Who is Real',
+ sum:'炎国画中世界。以水墨与“画卷”为舞台，讲记忆、执念与“岁”的另一面。视觉风格极强的代表作。',
+ chars:['年','夕','嵯峨']},
+{type:'ss', y:null, t:'源石尘行动', cn:'2021-03-09', region:'哥伦比亚', en:'Operation Originium Dust',
+ sum:'与《彩虹六号：围攻》联动。源石尘引发的跨世界遭遇，联动剧情中质量较高的一篇。'},
+{type:'ss', y:null, t:'遗尘漫步', cn:'2021-04-15', region:'卡兹戴尔', en:'Walk in the Dust',
+ sum:'萨卡兹往事补完：流亡、雇佣兵与“萨卡兹的家园在哪”。与《生于黑夜》互为补充。',
+ chars:['W','赫德雷','伊内丝']},
+{type:'ss', y:1098, t:'覆潮之下', cn:'2021-05-01', region:'伊比利亚', en:'Under Tides',
+ sum:'盐风城。深海教会与海嗣首次正面登场，斯卡蒂的深海猎人线索大量汇集。深海线（“大静谧”）的正式开端。',
+ ev:['★ 深海教会与海嗣登场','斯卡蒂／歌蕾蒂娅线索汇集'], chars:['斯卡蒂','歌蕾蒂娅','幽灵鲨']},
+{type:'ss', y:null, t:'联锁竞赛「荷谟伊智境」', cn:'2021-07-02', region:'其他',
+ sum:'玩法类活动，附带少量剧情片段。'},
+{type:'ss', y:1097, t:'多索雷斯假日', cn:'2021-08-03', region:'玻利瓦尔', en:'Dossoles Holiday',
+ sum:'第 8 届多索雷斯勇士冠军赛。夏日竞技外壳下的城市政治与间谍暗流，陈的个人线在此推进。',
+ chars:['陈','博士']},
+{type:'ss', y:1097, t:'长夜临光', cn:'2021-11-01', region:'卡西米尔', en:'Near Light',
+ sum:'第 24 届特锦赛正篇。临光的复出、0 号区域调查、感染者参赛制度的确立。卡西米尔篇的高潮。',
+ ev:['★ 临光复出与 0 号区域'], chars:['临光','玛恩纳','瓦伊凡']},
+{type:'ss', y:1097, t:'风雪过境', cn:'2021-12-21', region:'谢拉格', en:'Break the Ice',
+ sum:'雪山事变。银灰发动政变，谢拉格三族政治格局被重写，封闭之国被迫面对现代化与外界。',
+ ev:['★ 银灰政变'], chars:['银灰','初雪','崖心','角峰']},
+{type:'ss', y:null, t:'将进酒', cn:'2022-01-25', region:'炎国', en:'Invitation to Wine',
+ sum:'炎国酒宴与“岁”的又一面。以将进酒为名，讲权力、家族与年兽。'},
+{type:'ss', y:1099, t:'吾导先路', cn:'2022-03-15', region:'拉特兰', en:'Guide Ahead',
+ sum:'首届拉特兰万国峰会，《拉特兰宣言》。教宗伊万杰利斯塔十一世试图为泰拉建立一套共同安全秩序——也是拉特兰“律法”本质的正面展示。',
+ ev:['★ 首届万国峰会与《拉特兰宣言》'], chars:['伊万杰利斯塔十一世','费德里科','莫斯提马']},
+{type:'ss', y:1100, t:'愚人号', cn:'2022-05-01', region:'伊比利亚', en:'Stultifera Navis',
+ sum:'格兰法罗，夺回最后一座灯塔、寻找失踪的“愚人号”。深海猎人 vs 深海教会的正面战，乌尔比安、斯卡蒂、歌蕾蒂娅的三线汇合。深海线的高潮之一。',
+ ev:['★ 格兰法罗仰塔之战','深海猎人三方汇合'], chars:['斯卡蒂','乌尔比安','歌蕾蒂娅','幽灵鲨']},
+{type:'ss', y:1099, t:'尘影余音', cn:'2022-06-09', region:'莱塔尼亚', en:'Lingering Echoes',
+ sum:'维塞海姆，车尔尼告别音乐会遭“赫昆斯特之角”利用。莱塔尼亚双子塔、金律乐章与音乐源石技艺的核心展现。',
+ ev:['★ 音乐会恐袭','金律乐章线索'], chars:['薇薇安娜','黑键','车尔尼']},
+{type:'ss', y:null, t:'绿野幻梦', cn:'2022-07-05', region:'哥伦比亚', en:'Ideal City',
+ sum:'哥伦比亚边境的科研与拓荒。莱茵生命线的延伸。'},
+{type:'ss', y:1100, t:'理想城：长夏狂欢季', cn:'2022-08-11', region:'玻利瓦尔', en:'Ideal City',
+ sum:'祖尔策塔的撤离。玻利瓦尔内战阴影下的城市自治与“理想城”的代价。',
+ chars:['多伦','海蒂']},
+{type:'ss', y:1099, t:'叙拉古人', cn:'2022-11-01', region:'叙拉古', en:'Il Siracusano',
+ sum:'沃尔西尼动乱。叙拉古家族体系与新城的权力更替，德克萨斯与拉普兰德的正面对决。黑帮叙事的高峰。',
+ ev:['★ 沃尔西尼动乱','家族体系崩解'], chars:['德克萨斯','拉普兰德','恩布罗']},
+{type:'ss', y:null, t:'照我以火', cn:'2022-12-15', region:'哥伦比亚',
+ sum:'黑钢相关短篇，火焰与信念。'},
+{type:'ss', y:null, t:'登临意', cn:'2023-01-17', region:'炎国', en:'Where Vernal Winds Will Never Blow',
+ sum:'炎国边塞与“岁”的另一切面。'},
+{type:'ss', y:null, t:'落叶逐火', cn:'2023-03-07', region:'炎国',
+ sum:'炎国相关故事，涉及岁相与旧事。'},
+{type:'ss', y:1099, t:'孤星', cn:'2023-05-01', region:'哥伦比亚', en:'Lone Trail',
+ sum:'特里蒙。“地平线弧光计划”实为穿透星荚的实验，莱茵生命与哥伦比亚国防部的交易曝光。泰拉“天空之外有什么”这层世界观被正式掀开。',
+ ev:['★★ 地平线弧光计划：穿透星荚','莱茵生命与国防部的交易','克里斯腾失踪之谜'], chars:['缪尔赛思','赛雷娅','克里斯腾','多萝西']},
+{type:'ss', y:null, t:'空想花庭', cn:'2023-06-08', region:'维多利亚',
+ sum:'塔拉相关故事，火焰与土地。'},
+{type:'ss', y:null, t:'火山旅梦', cn:'2023-08-01', region:'莱塔尼亚',
+ sum:'莱塔尼亚火山与学术圈的故事。'},
+{type:'ss', y:null, t:'不义之财', cn:'2023-09-05', region:'哥伦比亚',
+ sum:'哥伦比亚企业阴谋与社会切片。'},
+{type:'ss', y:1100, t:'崔林特尔梅之金', cn:'2023-11-01', region:'莱塔尼亚', en:'Zwillingstürme im Herbst',
+ sum:'双子皇女“失声”传闻与九月起义纪念日。巫王遗产与金律乐章的正面冲突，莱塔尼亚篇的顶点。',
+ ev:['★ 双子皇女与金律乐章','巫王遗产'], chars:['黑键','薇薇安娜','女皇']},
+{type:'ss', y:1097, t:'银心湖列车', cn:'2023-12-05', region:'谢拉格', en:'The Rides to Lake Silberneherze',
+ sum:'耶拉冈德雕像落成，莱茵生命与喀兰贸易合作、星荚观测站动工。谢拉格开放路线的阶段成果。',
+ chars:['银灰','初雪']},
+{type:'ss', y:null, t:'怀黍离', cn:'2024-02-01', region:'炎国', en:'The Whirlpool that is Passion',
+ sum:'炎国农事与岁相。黍的登场篇，“田、天时、家人”的主题，与《将进酒》《登临意》共同构成岁线。',
+ chars:['黍','年年','令']},
+{type:'ss', y:null, t:'水晶箭行动', cn:'2024-03-07', region:'哥伦比亚',
+ sum:'安保与救援题材的短篇。'},
+{type:'ss', y:1094, t:'巴别塔', cn:'2024-04-11', region:'卡兹戴尔', en:'Babel',
+ sum:'巴别塔的正面叙事：特蕾西娅、凯尔希、博士与萨卡兹内战的全貌，补完主线最难写的一段前史。看完再看第十五章，痛感完全不同。',
+ ev:['★ 特蕾西娅的理想与死亡','博士在巴别塔的角色'], chars:['特蕾西娅','凯尔希','博士','特雷西斯','W']},
+{type:'ss', y:1100, t:'生路', cn:'2024-06-05', region:'阿戈尔', en:'Path of Life',
+ sum:'米利阿里乌姆启动“水道计划”，阿戈尔向全泰拉广播海嗣威胁、呼吁联盟。深海线从“局部恐怖”升级为“文明级危机”。',
+ ev:['★ 水道计划','★ 阿戈尔的全球广播'], chars:['斯卡蒂','乌尔比安','凯尔希']},
+{type:'ss', y:null, t:'太阳甩在身后', cn:'2024-08-01', region:'萨尔贡',
+ sum:'萨尔贡沙漠与黄金之城的线索。'},
+{type:'ss', y:null, t:'泰拉饭', cn:'2024-09-02', region:'其他',
+ sum:'美食主题的轻松短篇集。'},
+{type:'ss', y:null, t:'追迹日落以西', cn:'2024-10-09', region:'东国',
+ sum:'东国相关故事，日式舞台与家族。'},
+{type:'ss', y:null, t:'揭幕者们', cn:'2024-11-01', region:'其他',
+ sum:'戏剧与舞台主题的活动。'},
+{type:'ss', y:null, t:'出苍白海', cn:'2024-12-05', region:'伊比利亚',
+ sum:'伊比利亚沿海的故事，大静谧余波。'},
+{type:'ss', y:null, t:'相见欢', cn:'2025-01-22', region:'炎国',
+ sum:'炎国春节档，岁线延续。'},
+{type:'ss', y:null, t:'挽歌燃烧殆尽', cn:'2025-03-07', region:'维多利亚',
+ sum:'维多利亚战后的故事。'},
+{type:'ss', y:null, t:'众生行记', cn:'2025-05-01', region:'其他',
+ sum:'多人视角的群像活动。'},
+{type:'ss', y:null, t:'红丝绒', cn:'2025-06-05', region:'其他',
+ sum:'“红丝绒”相关故事。'},
+{type:'ss', y:null, t:'墟', cn:'2025-08-02', region:'东国',
+ sum:'东国废墟与旧日的故事。'},
+{type:'ss', y:null, t:'无忧梦呓', cn:'2025-09-04', region:'其他',
+ sum:'梦境主题的活动。'},
+{type:'ss', y:1101, t:'雪山降临1101', cn:'2025-11-01', region:'谢拉格',
+ sum:'谢拉格篇的后续，时间点明确标在 1101 年。'},
+{type:'ss', y:null, t:'未许之地', cn:'2025-12-05', region:'其他',
+ sum:'“未许之地”相关故事。'},
+{type:'ss', y:null, t:'雅赛努斯复仇记', cn:'2026-01-09', region:'米诺斯',
+ sum:'米诺斯相关故事，英雄与复仇。'},
+{type:'ss', y:null, t:'辞岁行', cn:'2026-02-10', region:'炎国',
+ sum:'炎国春节档，岁线。'},
+{type:'ss', y:null, t:'人们，我们', cn:'2026-04-07', region:'其他',
+ sum:'群像活动，多线并行的合辑。具体剧情梗概本页尚未整理（待补）。'},
+{type:'ss', y:null, t:'泡影苍霆', cn:'2026-06-01', region:'其他',
+ sum:'雷霆与泡影主题。'},
+{type:'ss', y:null, t:'直到大地变成一颗酸橙', cn:'2026-08-01', region:'其他',
+ sum:'近期活动，剧情梗概本页尚未整理（待补）。'},
+{type:'ss', y:null, t:'月行水上', cn:'2026-09-04', region:'其他',
+ sum:'承接《众生行记》的联动活动（与《女神异闻录3 Reload》）。'},
+{type:'ss', y:null, t:'昨日海', cn:'2026-10-09', region:'其他',
+ sum:'最新支线（2026-10-09 上线）。'},
+
+/* ---- 集成战略（肉鸽） ---- */
+{type:'is', y:null, t:'刻俄柏的灰蕈谜境', cn:'2020-08-25', region:'萨尔贡', en:'Ceobe\u2019s Fungimist',
+ sum:'集成战略的原型。刻俄柏误食致幻蘑菇后的“冒险”，是罗德岛对萨尔贡荒原的一次荒诞排练。虽然只是初版，但定下了肉鸽“叙事碎片+随机遭遇”的基本形态。',
+ ev:['肉鸽玩法首次登场','剧情为幻觉框架下的碎片叙事']},
+{type:'is', y:null, t:'傀影与猩红孤钻', cn:'常驻主题', region:'维多利亚', en:'Crimson Solitaire',
+ sum:'首个常态化主题。以维多利亚剧团与傀影为核心，讲“舞台、观众与演员”的循环——每一次开局都是一场演出，而傀影始终在寻找那个能让他停下的观众。肉鸽叙事成熟的开端。',
+ ev:['★ 首个常驻集成战略主题','剧团／傀影线']},
+{type:'is', y:null, t:'水月与深蓝之树', cn:'常驻主题', region:'伊比利亚', en:'Mizuki & Caerula Arbor',
+ sum:'深海线在肉鸽里的展开。伊比利亚沿海的“深蓝之树”、海嗣的多条演化路线，以及水月本人的身世。多次结局差异极大，是世界观拓展最激进的一期。',
+ ev:['★ 海嗣演化多分支结局','水月身世线索']},
+{type:'is', y:null, t:'探索者的银凇止境', cn:'常驻主题', region:'萨米', en:'Expeditioner\u2019s Silverpine',
+ sum:'萨米雪原。北方邪魔、雪priest与“世界的尽头”在肉鸽中展开，与故事集《眠于树影之中》互为表里。氛围最冷、也最接近泰拉“未知边界”的一期。',
+ ev:['★ 北方邪魔与塌缩体']},
+{type:'is', y:null, t:'萨卡兹的无终奇语', cn:'常驻主题', region:'卡兹戴尔', en:'Sarkaz\u2019s Endless Tale',
+ sum:'萨卡兹视角的肉鸽。以“无终的战争叙事”为核心，多轮循环对应萨卡兹反复被清算的历史，与主线维多利亚篇的萨卡兹线直接互补。',
+ ev:['★ 萨卡兹循环史观']},
+{type:'is', y:null, t:'岁的界园志异', cn:'常驻主题', region:'炎国', en:'Sui\u2019s Garden of Curiosities',
+ sum:'炎国“岁”相体系的肉鸽。以界园为舞台，把岁相兄妹、画境与年兽的设定铺展成一个个小世界，炎国线的集中展示。',
+ ev:['★ 岁相体系集中展开']},
+{type:'is', y:null, t:'沉沦者的黑流树海', cn:'常驻主题', region:'其他', en:'The Sunken\u2019s Black Stream',
+ sum:'最新集成战略主题（biligame 导航现行版本）。“黑流树海”与沉沦者的叙事，世界观继续向泰拉之外延伸。',
+ ev:['最新肉鸽主题']},
+
+/* ---- 故事集 ---- */
+{type:'story', y:null, t:'战地秘闻', cn:'2019-10-15', region:'其他', sum:'早期故事集，干员战地短篇合集。'},
+{type:'story', y:null, t:'洪炉示岁', cn:'2020-01-09', region:'炎国', sum:'炎国春节故事集，首见“岁”的设定。'},
+{type:'story', y:null, t:'午间逸话', cn:'2020-02-25', region:'罗德岛', sum:'罗德岛日常短篇。'},
+{type:'story', y:null, t:'乌萨斯的孩子们', cn:'2020-06-18', region:'乌萨斯', sum:'彼得海姆中学惨剧的学生视角。'},
+{type:'story', y:null, t:'踏寻往昔之风', cn:'2020-09-24', region:'谢拉格', sum:'谢拉格相关短篇。'},
+{type:'story', y:null, t:'此地之外', cn:'2021-01-05', region:'其他', sum:'故事集，多地域片段合集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'灯火序曲', cn:'2021-06-01', region:'其他', sum:'故事集，以灯火为意象串联多则短篇。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'如我所见', cn:'2021-07-13', region:'其他', sum:'故事集，收录多则干员短篇。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'红松林', cn:'2021-10-15', region:'萨米', sum:'故事集，萨米与北方线索的早期铺垫。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'阴云火花', cn:'2022-02-15', region:'哥伦比亚', sum:'故事集，哥伦比亚题材短篇。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'未尽篇章', cn:'2022-07-19', region:'其他', sum:'故事集，收录多则干员短篇。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'日暮寻路', cn:'2022-09-08', region:'卡西米尔', sum:'故事集，玛恩纳与卡西米尔骑士的黄昏。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'好久不见', cn:'2022-09-15', region:'汐斯塔', sum:'故事集，汐斯塔旧友重逢。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'春分', cn:'2023-02-14', region:'其他', sum:'故事集，收录多则干员短篇。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:1099, t:'眠于树影之中', cn:'2023-07-06', region:'萨米', sum:'萨米雪原核心篇，北方邪魔与“世界尽头”。'},
+{type:'story', y:null, t:'去咧嘴谷', cn:'2024-01-09', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'熔炉“还魂”记', cn:'2024-07-09', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'我们明日见', cn:'2025-02-14', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'镜中集', cn:'2025-07-08', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'十字路口', cn:'2026-03-10', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'},
+{type:'story', y:null, t:'丛林症结', cn:'2026-07-10', region:'其他', sum:'故事集。具体篇目梗概本页尚未整理（待补）。'}
+];
+
+/* ---- 人物 ---- */
+/* 事件详情：点击关键事件时显示 */
+const ED = {
+  "★ 博士苏醒，失忆":"博士在切尔诺伯格地下的石棺中被罗德岛挖出，睁眼时既不知道自己是谁，也不记得任何过去。唯一完好的是“指挥”这项能力——他能瞬间读懂战场。这个失忆设定是全书最大的悬念：他到底是谁、为什么被放进石棺、为什么特蕾西娅与凯尔希要唤醒他。",
+  "★ 天灾摧毁切城":"天灾在整合运动攻占城市当天降临，切尔诺伯格的地基被源石结晶贯穿，整座移动城市失去动力并开始崩塌。这迫使所有势力在同一时间做同一个选择：逃。罗德岛因此带着大量感染者撤离，也为后来的龙门线埋下伏笔。",
+  "米莎／碎骨的悲剧线":"米莎是感染矿石病的少女，哥哥碎骨为了保住她不断向各方妥协，一次次做“更坏但更安全”的选择，最终两人都没能走出切城。这条线是前几章的道德重心：在绝境里，善意和软弱是同一件事。",
+  "★ 龙门近卫局与陈、诗怀雅登场":"罗德岛撤到龙门后与龙门近卫局对接。陈是直来直去的执法者，诗怀雅是圆滑的政客型警官，两人构成龙门官方的两副面孔；魏彦吾则在暗处下棋。龙门的政治结构从这一章开始摊开。",
+  "★ 阿米娅 vs 塔露拉首次正面":"阿米娅第一次与整合运动领袖塔露拉正面对峙。此时的塔露拉像是纯粹的恶，但这场对峙埋下了疑问：一个能说出那种话的人，为什么眼神是空的？答案要到第八章才揭晓。",
+  "★ 霜星之死":"雪怪小队队长霜星在切尔诺伯格与罗德岛死战后力竭而亡。她死前没有求饶，也没有和解，只是把最后的力气用在保护同伴上。这是全篇最重要的情感转折——整合运动从“敌人”变成了“悲剧”。",
+  "★ 塔露拉决战":"罗德岛在切尔诺伯格与塔露拉决一死战。战斗本身不是重点，重点是战斗之后揭开的真相：塔露拉的意志长期被“黑蛇／卡谢娜”侵蚀，她的恶是被一点点诱导出来的。她既是加害者，也是受害者。",
+  "★ 揭穿黑蛇操控人心的真相":"卡谢娜并非单纯附身，而是通过长期心理诱导，把一个人内心最阴暗的部分放大成行动。第八章这层揭示改变了整个故事的道德框架：恶不是天生的，是被制造出来的。",
+  "★ Hillock 暴行（1098-01-02）":"维多利亚驻军在 Hillock 镇压塔拉人起义，造成大规模死伤。这是维多利亚篇的开场，说明帝国的问题不是“某个坏人”，而是整个统治结构已经失效。罗德岛在此进入伦蒂尼姆。",
+  "★ 萨卡兹王庭登场":"卡兹戴尔的萨卡兹王庭力量正式现身伦蒂尼姆：曼弗雷德、阿斯卡纶等王庭要角相继出现。萨卡兹不再只是“佣兵种族”，而是一个有国家意志的政治实体。",
+  "★ 特雷西斯掌控伦蒂尼姆":"特雷西斯以摄政身份实际控制维多利亚首都，把军事委员会搬进西哈勒格宫，并用“继承权”把维多利亚贵族拖入内耗。他的目标始终是给萨卡兹找一个能活下去的家园——只是方式是最坏的那种。",
+  "★ 伦蒂尼姆会战":"大会战从 9 月 25 日打到 10 月 2 日。公爵联军、典范军、自救军与罗德岛多线进攻，突破萨卡兹封锁并推进到西哈勒格宫。这是维多利亚篇的高潮，也是帝国崩解的直接原因。",
+  "★★ 普瑞赛斯登场":"前文明的存在普瑞赛斯在第十四章现身，提出“内化宇宙”的概念，并开始审视泰拉文明是否有资格继续存在。她是目前主线中层级最高的对手——不是要打赢的敌人，而是要回答的问题。",
+  "★★★ 凯尔希之死":"凯尔希为保护博士与阿米娅而牺牲，罗德岛本舰随后被封存。这是全书最重的一次失去：那个永远有答案、永远在兜底的人不在了。Mon3tr 在她死后以新形态重生，成为某种意义上的“遗物”。",
+  "★ 圣愚处决，圣骏堡骚乱":"乌萨斯的圣愚“迦弗里伊尔”为民众辩护七天七夜后被沙皇处决，引发圣骏堡十年来最大骚乱。这件事暴露了乌萨斯皇权与民意的彻底断裂，是第十六章的政治引信。",
+  "★★★★ 凯尔希复活，代价是失去不朽":"凯尔希在第十七章复活，但代价是放弃 AMa-10 不朽核心——她从此只有一次生命。这个设定把“不死的老怪物”变成了会真正死去的人，也让她此后所有选择都带上了重量。",
+  "★★ 乌萨斯帝国议会解散":"议会在民意与腐朽贵族的撕裂中解散，旧秩序正式崩塌。这标志着乌萨斯从“帝国”走向未知的重构，也是主线至今最大的一次制度性事件。",
+  "★★ 普瑞赛斯下最后通牒":"在审视凯尔希万年记忆后，普瑞赛斯认定泰拉文明“还不够”，要求博士证明其存续的资格。这让故事从“打一场战争”升级为“回答一个关于文明的问题”。",
+  "★ 地平线弧光计划：穿透星荚":"所谓“地平线弧光计划”表面是超级武器研发，实为莱茵生命与哥伦比亚国防部联手穿透“星荚”的实验——也就是把泰拉的天空打穿。世界观由此从“大陆”扩展到“世界之外”。",
+  "★ 首届万国峰会与《拉特兰宣言》":"教宗伊万杰利斯塔十一世召开泰拉史上首次国际会议，试图建立各国共同安全秩序，成果被后世称为《拉特兰宣言》。这是拉特兰“律法”体系第一次以国际政治的形式出现。",
+  "★ 深海教会与海嗣登场":"盐风城事件让深海教会与海嗣首次正面登场。海嗣不是普通怪物，而是能沟通、能同化、能“邀请”的生物——它们问的是“你要不要成为我们的一员”。深海线的恐怖感由此建立。",
+  "★ 格兰法罗仰塔之战":"夺回最后一座灯塔、寻找失踪的愚人号。深海猎人三方（斯卡蒂、歌蕾蒂娅、乌尔比安）在此汇合，与深海教会正面开战。这是深海线的高潮之一。",
+  "★ 特蕾西娅的理想与死亡":"《巴别塔》补完了特蕾西娅的全貌：她相信萨卡兹能与其他种族共存，并用近乎固执的方式推进这个理想，最终在 1094 年的斩首突袭中被自己的兄长杀死。看完这一篇再看第十五章，痛感完全不同。",
+  "★ 水道计划":"米利阿里乌姆启动“水道计划”，准备把海嗣的真相与威胁向整个泰拉公开。阿戈尔从“隐世的先进文明”转为“被迫现身的当事人”。",
+  "★ 阿戈尔的全球广播":"阿戈尔向全泰拉广播海嗣威胁并呼吁联盟。深海线从“局部恐怖事件”升级为“文明级危机”。",
+  "★ 阿米娅力量失控前兆":"阿米娅在远北动用黑王冠后出现明显的失控前兆。这是“魔王”力量代价的正面呈现：她能借用前代魔王的力量，但也在被这股力量侵蚀。",
+  "希尔达登场":"希尔达是能抚平矿石病痛楚的卡特斯少女，代价是让病征无痛结晶化——痛苦消失的同时，人也在变成源石。她代表了一种“温柔的毁灭”，比直接的暴力更难反驳。",
+  "矿工屠杀曝光":"乌萨斯政府对矿工的大规模屠杀被揭露。源石主矿脉枯竭导致帝国能源命脉被切断，而统治者的应对是掩盖与镇压。这是第十六章最直接的政治控诉。",
+  "★ Babel 被斩首，特蕾西娅死亡":"特雷西斯趁 Babel 全军出征、本土空虚发动突袭。特蕾西娅死亡，Babel 组织瓦解。这件事是所有后续故事的起点——没有这一天，就没有后来的罗德岛。",
+  "★ 博士昏迷进入石棺，阿米娅成为魔王":"特蕾西娅死后，博士陷入昏迷，被凯尔希放入切尔诺伯格的石棺保存；阿米娅继承黑王冠，成为新任魔王。两条主线（博士的过去、阿米娅的责任）在此同时埋下。"
+};
+
+const P = {
+ '博士':{race:'未知（前文明相关）',from:'不明',job:'罗德岛指挥官',faction:'罗德岛',
+   desc:'石棺中醒来的失忆者。真实身份与“Oracle”相关，是特蕾西娅与凯尔希在巴别塔时期唤醒的存在。指挥能力顶级，但对自己一无所知——他的过去就是主线最大的谜。'},
+ '阿米娅':{race:'卡特斯',from:'卡兹戴尔',job:'术师 / 罗德岛领袖',faction:'罗德岛',
+   desc:'特蕾西娅之后的新任“魔王”，黑王冠持有者。年纪轻轻就承担了远超年龄的责任，主线一切选择的中心。第十五章后力量与王冠的联系持续加深，出现失控前兆。'},
+ '凯尔希':{race:'菲林',from:'不明',job:'医疗 / 罗德岛元老',faction:'罗德岛',
+   desc:'活了极久的存在，AMa-10 不朽核心的持有者。巴别塔时期的见证者、罗德岛的定海神针。第十五章为保护博士与阿米娅牺牲，第十七章复活——代价是放弃不朽，从此只有一次生命。'},
+ 'Mon3tr':{race:'—',from:'—',job:'凯尔希的使魔',faction:'罗德岛',
+   desc:'凯尔希的使魔，长期作为她的战斗手段存在。第十五章凯尔希死后以新形态重生，成为独立个体。'},
+ '特蕾西娅':{race:'萨卡兹',from:'卡兹戴尔',job:'Babel 领袖 / 前魔王',faction:'Babel',
+   desc:'萨卡兹的“魔王”，巴别塔的建立者。主张萨卡兹与泰拉共存，最终在 1094 年的斩首突袭中被特雷西斯杀死。她的死是整个故事的隐藏主轴，也是阿米娅一切行动的起点。'},
+ '特雷西斯':{race:'萨卡兹',from:'卡兹戴尔',job:'摄政 / 军事委员会领袖',faction:'卡兹戴尔军事委员会',
+   desc:'特蕾西娅的兄长，卡兹戴尔军事委员会领袖、维多利亚摄政。相信萨卡兹只能靠征服生存。1098-10-02 在启动 Amnannam 后被阿斯卡纶刺杀。'},
+ '塔露拉':{race:'德拉克',from:'乌萨斯',job:'整合运动创始人',faction:'整合运动',
+   desc:'整合运动的创立者，曾长期被“黑蛇／卡谢娜”的意识操控而不自知。第八章后真相揭开，第十七章回到乌萨斯参与终局——她是全篇最复杂的“反派”。'},
+ '霜星':{race:'卡特斯',from:'乌萨斯',job:'雪怪小队队长',faction:'整合运动',
+   desc:'雪怪小队队长，整合运动最能打也最有人情味的干部之一。第七章战死。她的死让玩家第一次意识到整合运动不是“坏人”。'},
+ '爱国者':{race:'—',from:'乌萨斯',job:'盾卫领袖',faction:'整合运动',
+   desc:'乌萨斯盾卫的领袖，因感染者的遭遇加入整合运动。第七章与罗德岛对峙，是“旧时代的军人”这一类角色的典型。'},
+ 'W':{race:'萨卡兹',from:'卡兹戴尔',job:'雇佣兵',faction:'巴别塔 → 罗德岛',
+   desc:'巴别塔时期的旧人，特蕾西娅的追随者。第八章以“维什戴尔”之名完成立场转变，是萨卡兹线最重要的行动者之一。'},
+ '卡谢娜':{race:'—',from:'—',job:'“黑蛇”',faction:'—',
+   desc:'黑蛇的意识化身，长期蛊惑并操控塔露拉。第八章的真相揭示：恶不是天生的，是被一点点诱导出来的。'},
+ '普瑞赛斯':{race:'前文明幸存者',from:'—',job:'—',faction:'—',
+   desc:'前文明的存在，第十四章登场。审视凯尔希万年记忆后认为泰拉文明“还不够”，要求博士证明其存续的价值。第十七章下达最后通牒——她是目前主线最高层级的对手。'},
+ '陈':{race:'龙',from:'龙门',job:'近卫局警官',faction:'龙门近卫局',
+   desc:'龙门近卫局的警官，魏彦吾的侄女。正义感强、行事直接。龙门篇的核心人物，后在维多利亚篇继续行动。'},
+ '诗怀雅':{race:'菲林',from:'龙门',job:'近卫局',faction:'龙门近卫局', desc:'龙门近卫局高层，与陈既是同事也是互补的搭档。'},
+ '魏彦吾':{race:'龙',from:'龙门',job:'龙门执政',faction:'龙门',
+   desc:'龙门的实际掌权者。手段强硬、两手准备，既保护龙门也牺牲过一些人——龙门篇的道德重心。'},
+ '银灰':{race:'菲林',from:'谢拉格',job:'喀兰贸易总裁',faction:'喀兰贸易',
+   desc:'恩希欧迪斯·希瓦艾什，谢拉格改革派的核心。归国后开放国门、创立喀兰贸易，并在雪山事变中发动政变。'},
+ '临光':{race:'库兰达',from:'卡西米尔',job:'骑士',faction:'卡西米尔',
+   desc:'玛嘉烈·临光，被称为“耀骑士”的传奇骑士。因被诬陷感染而流亡，后在特锦赛复出。'},
+ '德克萨斯':{race:'卢珀斯',from:'哥伦比亚',job:'企鹅物流',faction:'企鹅物流',
+   desc:'德州家族清洗后唯一的幸存者，现为企鹅物流成员。叙拉古篇的核心人物。'},
+ '斯卡蒂':{race:'—(深海猎人)',from:'阿戈尔',job:'深海猎人',faction:'深海猎人',
+   desc:'深海猎人，阿戈尔出身。覆潮之下、愚人号、生路三篇的主角线索，与海嗣的关系是全篇最深的谜之一。'},
+ '乌尔比安':{race:'—(深海猎人)',from:'阿戈尔',job:'深海猎人第三大队队长',faction:'深海猎人',
+   desc:'深海猎人第三大队队长，社区常称“三队长”。拒绝承认自己是海嗣的“同胞”，却仍不断向深海深处走。'},
+ '歌蕾蒂娅':{race:'—(深海猎人)',from:'阿戈尔',job:'深海猎人第二大队队长',faction:'深海猎人',
+   desc:'深海猎人第二大队队长，冷静、务实，负责把散落的猎人重新串联起来。'},
+ '幽灵鲨':{race:'—(深海猎人)',from:'阿戈尔',job:'深海猎人',faction:'深海猎人',
+   desc:'深海猎人成员，精神状态长期不稳定。归溟形态的她是深海线的重要转折。'},
+ '希尔达':{race:'卡特斯',from:'乌萨斯',job:'—',faction:'—',
+   desc:'第十六章登场的卡特斯少女，拥有抚平矿石病痛楚的力量——代价是让病征无痛结晶化。她的能力与“永恒之地”的传闻相关。'},
+ '维特':{race:'—',from:'乌萨斯',job:'帝国议会议长',faction:'乌萨斯帝国',
+   desc:'乌萨斯议会议长，改革派。第十七章推动《冬季资源调配紧急法》，见证了议会的解散。'},
+ '费奥多尔':{race:'—',from:'乌萨斯',job:'乌萨斯皇帝',faction:'乌萨斯帝国',
+   desc:'乌萨斯现任皇帝，试图在贵族与民意的撕裂中推动改革，第十七章面对帝国解体。'},
+ '可露希尔':{race:'萨卡兹',from:'—',job:'罗德岛总工程师',faction:'罗德岛',
+   desc:'罗德岛的总工程师，技术与后勤的真正支柱。第十五至十七章随队行动。'},
+ '赫德雷':{race:'萨卡兹',from:'卡兹戴尔',job:'佣兵',faction:'—', desc:'萨卡兹佣兵，萨卡兹线的重要行动者，与 W、伊内丝关系密切。'},
+ '阿斯卡纶':{race:'萨卡兹',from:'卡兹戴尔',job:'刺客',faction:'卡兹戴尔军事委员会', desc:'萨卡兹王庭的刺客，第十四章刺杀特雷西斯。'},
+ '曼弗雷德':{race:'萨卡兹',from:'卡兹戴尔',job:'王庭要角',faction:'军事委员会', desc:'特雷西斯麾下的萨卡兹王庭要角。'},
+ '莫斯提马':{race:'萨科塔',from:'拉特兰',job:'信使',faction:'拉特兰', desc:'拉特兰的堕天使信使，吾导先路的核心人物之一。'},
+ '费德里科':{race:'萨科塔',from:'拉特兰',job:'公证所执行者',faction:'拉特兰', desc:'公证所执行者，1099 年封圣，成为拉特兰历史上首位非教皇出身的“圣者”。'},
+ '年':{race:'—(岁相)',from:'炎国',job:'—',faction:'岁相', desc:'“岁”之一，炎国线的核心，洪炉与年兽的化身。'},
+ '夕':{race:'—(岁相)',from:'炎国',job:'画家',faction:'岁相', desc:'“岁”之一，以画入世，画中人篇的核心。'},
+ '黍':{race:'—(岁相)',from:'炎国',job:'—',faction:'岁相', desc:'“岁”之一，与农事、天时相关。怀黍离篇的中心人物，拒绝“以命换命”的结局。'},
+ '令':{race:'—(岁相)',from:'炎国',job:'—',faction:'岁相', desc:'“岁”之一，酿酒者，岁相兄妹中的“姐姐”。'},
+ '泥岩':{race:'萨卡兹',from:'莱塔尼亚',job:'—',faction:'—', desc:'沃伦姆德薄暮的核心人物，萨卡兹佣兵，性格温和。'},
+ '玛恩纳':{race:'库兰达',from:'卡西米尔',job:'骑士',faction:'卡西米尔', desc:'临光与玛莉娅的父亲，卡西米尔骑士的上一代。'},
+ '缪尔赛思':{race:'—',from:'哥伦比亚',job:'莱茵生命',faction:'莱茵生命', desc:'孤星的关键人物，莱茵生命的重要一员。'},
+ '赛雷娅':{race:'瓦伊凡',from:'哥伦比亚',job:'莱茵生命防卫部长',faction:'莱茵生命', desc:'莱茵生命防卫部门负责人，孤星与多萝西篇的核心。'},
+ '能天使':{race:'萨科塔',from:'拉特兰',job:'企鹅物流',faction:'企鹅物流', desc:'企鹅物流成员，龙门喧闹法则登场。'},
+ '玛莉娅':{race:'库兰达',from:'卡西米尔',job:'骑士',faction:'卡西米尔', desc:'临光之妹，为家族荣誉出赛特锦赛。'},
+ '拉普兰德':{race:'卢珀斯',from:'叙拉古',job:'—',faction:'—', desc:'叙拉古篇的核心角色，与德克萨斯宿命纠缠。'},
+ '初雪':{race:'菲林',from:'谢拉格',job:'圣女',faction:'谢拉格',
+   desc:'希瓦艾什家的长女，谢拉格的“圣女”。在银灰的政变中处于家族与信仰的夹缝里。'},
+ '崖心':{race:'菲林',from:'谢拉格',job:'罗德岛干员',faction:'罗德岛',
+   desc:'希瓦艾什家的小女儿，银灰之妹。因感染被家族放逐，后在罗德岛落脚。'},
+ '阿丽娜':{race:'—',from:'乌萨斯',job:'整合运动创始人',faction:'整合运动',
+   desc:'与塔露拉一同创立整合运动的伙伴。她的死是塔露拉走向极端的重要推手。'},
+ '杜宾':{race:'菲林',from:'—',job:'罗德岛教官',faction:'罗德岛',
+   desc:'罗德岛的新兵教官，负责把一群外行练成能上战场的人。'},
+ '米莎':{race:'卢珀斯',from:'乌萨斯',job:'—',faction:'—',
+   desc:'切尔诺伯格事件中的感染者少女，碎骨之妹。她的选择与结局是早期主线最沉重的一笔。'},
+ '碎骨':{race:'卢珀斯',from:'乌萨斯',job:'—',faction:'—',
+   desc:'米莎的兄长，为保护家人不断妥协，最终走向不可逆的结局。'},
+ '汉娜':{race:'—',from:'维多利亚',job:'自救军',faction:'伦蒂尼姆自救军',
+   desc:'伦蒂尼姆自救军成员，维多利亚篇的城市抵抗力量之一。'},
+ '克洛维希娅':{race:'—',from:'维多利亚',job:'自救军',faction:'伦蒂尼姆自救军',
+   desc:'自救军的关键人物，代表伦蒂尼姆普通市民的抵抗意志。'},
+ '瓦斯汀':{race:'—',from:'维多利亚',job:'自救军领袖',faction:'伦蒂尼姆自救军',
+   desc:'伦蒂尼姆自救军的组织者之一，第十一章合作的核心。'},
+ '伊内丝':{race:'萨卡兹',from:'卡兹戴尔',job:'教师',faction:'—',
+   desc:'萨卡兹出身的教师，赫德雷与 W 的旧识，第十一章的重要人物。'},
+ '格拉尼':{race:'库兰达',from:'卡西米尔',job:'骑士',faction:'—',
+   desc:'卡西米尔出身的年轻骑士，早期支线《骑兵与猎人》的主角。'},
+ '拜松':{race:'—',from:'龙门',job:'龙门近卫局',faction:'龙门近卫局',
+   desc:'龙门近卫局的年轻成员，喧闹法则中登场的执行者。'},
+ '莱恩哈特':{race:'—',from:'莱塔尼亚',job:'—',faction:'—',
+   desc:'沃伦姆德篇中的关键人物，与市民起义的走向直接相关。'},
+ '嘉维尔':{race:'—',from:'萨尔贡',job:'医疗',faction:'罗德岛',
+   desc:'萨尔贡阿卡胡拉出身的医生，战斗力与医术同样出众。'},
+ '祖玛玛':{race:'—',from:'萨尔贡',job:'—',faction:'阿卡胡拉',
+   desc:'阿卡胡拉部落的领袖之一，密林悍将归来篇的核心。'},
+ '安东尼':{race:'—',from:'哥伦比亚',job:'—',faction:'—',
+   desc:'西蒙家的次子，孤岛风云的主角，曼斯菲尔德监狱越狱事件的中心人物。'},
+ '嵯峨':{race:'—',from:'炎国',job:'—',faction:'—',
+   desc:'炎国画中人篇的关键角色，与“画卷”世界关系紧密。'},
+ '伊万杰利斯塔十一世':{race:'萨科塔',from:'拉特兰',job:'教宗',faction:'拉特兰',
+   desc:'拉特兰现任教宗，首届万国峰会与《拉特兰宣言》的推动者。'},
+ '薇薇安娜':{race:'—',from:'莱塔尼亚',job:'—',faction:'莱塔尼亚',
+   desc:'莱塔尼亚的贵族与骑士，尘影余音与崔林特尔梅之金的重要人物。'},
+ '黑键':{race:'—',from:'莱塔尼亚',job:'—',faction:'莱塔尼亚',
+   desc:'莱塔尼亚线的核心人物，与巫王遗产、金律乐章密切相关。'},
+ '车尔尼':{race:'—',from:'莱塔尼亚',job:'音乐家',faction:'莱塔尼亚',
+   desc:'维塞海姆的作曲家，告别音乐会的主角，尘影余音的中心。'},
+ '多萝西':{race:'—',from:'哥伦比亚',job:'莱茵生命研究员',faction:'莱茵生命',
+   desc:'莱茵生命的研究员，359 号研究基地事件的核心人物。'},
+ '克里斯腾':{race:'—',from:'哥伦比亚',job:'莱茵生命结构部长',faction:'莱茵生命',
+   desc:'莱茵生命结构部门负责人，“地平线弧光计划”的关键人物，后失踪。'},
+ '多伦':{race:'—',from:'玻利瓦尔',job:'—',faction:'—',
+   desc:'玻利瓦尔理想城篇的关键人物，与城市自治的选择相关。'},
+ '海蒂':{race:'—',from:'玻利瓦尔',job:'—',faction:'—',
+   desc:'玻利瓦尔篇的重要角色，理想城撤离行动的参与者。'},
+ '恩布罗':{race:'—',from:'叙拉古',job:'—',faction:'叙拉古家族',
+   desc:'叙拉古家族体系中的关键人物，叙拉古人篇的权力角逐者之一。'},
+ '瓦伊凡':{race:'库兰达',from:'卡西米尔',job:'骑士',faction:'卡西米尔',
+   desc:'卡西米尔特锦赛的对手骑士，长夜临光篇的参赛者之一。'},
+ '年年':{race:'—（岁相）',from:'炎国',job:'—',faction:'岁相',
+   desc:'炎国岁相体系的成员，怀黍离篇中登场的角色。'},
+ '角峰':{race:'菲林',from:'谢拉格',job:'银灰的护卫',faction:'希瓦艾什家',desc:'银灰的贴身护卫，谢拉格篇的重要配角，沉默但可靠。'},
+ '女皇':{race:'—',from:'莱塔尼亚',job:'—',faction:'莱塔尼亚',
+   desc:'莱塔尼亚的双子女皇，崔林特尔梅之金篇的权力中心。'}
+};
+
+/* ============ 逻辑 ============ */
+const $ = s => document.querySelector(s);
+const TYPE_NAME = {main:'主线', ss:'支线', story:'故事集', is:'肉鸽', lore:'背景'};
+const ERAS = [...new Set(D.filter(x=>x.y).map(x=>x.y))].sort((a,b)=>a-b);
+const REGIONS = [...new Set(D.map(x=>x.region).filter(Boolean))];
+let q='', type='all', view='chron', char=null;
+
+D.forEach(x=>{
+  x._s=[TYPE_NAME[x.type], x.t, x.en||'', x.region||'', x.when||'', x.cn||'',
+        (x.y?String(x.y):'年份不明'), x.sum||''].concat(x.ev||[]).concat(x.chars||[]).join(' ').toLowerCase();
+});
+
+$('#s0').textContent=D.length;
+$('#s1').textContent=D.filter(x=>x.type==='main').length;
+$('#s2').textContent=D.filter(x=>x.type==='ss').length;
+$('#s3').textContent=D.filter(x=>x.type==='story').length;
+$('#s4').textContent=D.filter(x=>x.type==='is').length;
+
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function hl(s,terms){let o=esc(s);terms.forEach(t=>{if(!t)return;
+  o=o.replace(new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');});return o;}
+
+function match(x){
+  if(type!=='all' && x.type!==type) return false;
+  if(char && !(x.chars||[]).includes(char)) return false;
+  if(!q.trim()) return true;
+  return x._s.includes(q.trim().toLowerCase());
+}
+
+function itemHTML(x,terms){
+  const k = x.type;
+  return '<div class="l1"><span class="k '+k+'">'+TYPE_NAME[k]+'</span>'+
+    '<span class="nm">'+hl(x.t,terms)+'</span>'+
+    '<span class="mt">'+(x.y?x.y+' 年':(x.when||'年份不明'))+'</span></div>'+
+    (x.sum?'<div class="sm">'+hl(x.sum,terms)+'</div>':'')+
+    '<div class="dt">'+
+      ((x.ev&&x.ev.length)?('<div class="lbl">关键事件</div>'+x.ev.map(e=>'<p class="ev'+(e.includes('★')?' key':'')+'" data-e="'+esc(e)+'">'+hl(e,terms)+'</p>').join('')):'')+
+      ((x.chars&&x.chars.length)?('<div class="lbl">相关人物</div><div class="cc">'+
+        x.chars.map(c=>'<span data-c="'+esc(c)+'">'+hl(c,terms)+'</span>').join('')+'</div>'):'')+
+      '<div class="meta">'+[x.region?('地区：'+x.region):'', x.cn?('上线：'+x.cn):'', x.when?('剧情时间：'+x.when):''].filter(Boolean).join('　·　')+'</div>'+'<div class="meta"><a class="bli" href="'+bk(x.t)+'" target="_blank" rel="noopener">📖 百度百科：'+esc(x.t)+'</a></div>'+
+    '</div>';
+}
+
+function renderChron(){
+  const terms=q.trim()?[q.trim()]:[];
+  const arr=D.filter(match);
+  if(!arr.length){ $('#main').innerHTML='<div class="empty">没有匹配条目。</div>'; return; }
+  const groups={};
+  arr.forEach(x=>{ const k=x.y?String(x.y):'none'; (groups[k]=groups[k]||[]).push(x); });
+  const keys=Object.keys(groups).sort((a,b)=>{
+    if(a==='none')return 1; if(b==='none')return -1; return a-b; });
+  let h='';
+  keys.forEach(k=>{
+    const list=groups[k];
+    const label = k==='none' ? '年份不明' : k+' 年';
+    const sub = list.map(x=>TYPE_NAME[x.type]).reduce((m,t)=>(m[t]=(m[t]||0)+1,m),{});
+    h+='<h2 class="sec">'+label+'<small>'+Object.entries(sub).map(([t,n])=>t+' '+n).join(' · ')+'</small></h2>';
+    list.sort((a,b)=>(a.cn||'')<(b.cn||'')?-1:1);
+    list.forEach(x=>{ h+='<div class="it" data-i="'+D.indexOf(x)+'">'+itemHTML(x,terms)+'</div>'; });
+  });
+  $('#main').innerHTML=h;
+  bindItems();
+}
+
+function renderRegion(){
+  const arr=D.filter(match);
+  const by={};
+  arr.forEach(x=>{ const r=x.region||'未标注'; (by[r]=by[r]||[]).push(x); });
+  let h='<h2 class="sec">按地区<small>点击查看该地区全部条目</small></h2><div class="regiongrid">';
+  Object.keys(by).sort((a,b)=>by[b].length-by[a].length).forEach(r=>{
+    const list=by[r];
+    h+='<div class="rcard" data-r="'+esc(r)+'"><b>'+esc(r)+'</b><div>'+list.length+' 条：'+
+       list.slice(0,3).map(x=>esc(x.t)).join('、')+(list.length>3?'…':'')+'</div></div>';
+  });
+  h+='</div><div id="rlist"></div>';
+  $('#main').innerHTML=h;
+  document.querySelectorAll('.rcard').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const r=c.dataset.r;
+      const list=D.filter(x=>(x.region||'未标注')===r && match(x));
+      const terms=q.trim()?[q.trim()]:[];
+      let g='<h2 class="sec">'+esc(r)+'<small>'+list.length+' 条</small></h2>';
+      list.sort((a,b)=>(a.cn||'')<(b.cn||'')?-1:1)
+          .forEach(x=>{g+='<div class="it" data-i="'+D.indexOf(x)+'">'+itemHTML(x,terms)+'</div>';});
+      $('#rlist').innerHTML=g; bindItems();
+      $('#rlist').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+  if(q.trim()){
+    const terms=[q.trim()];
+    let g='<h2 class="sec">搜索结果<small>'+arr.length+' 条 · 关键词「'+esc(q.trim())+'」</small></h2>';
+    if(!arr.length){
+      g+='<div class="empty">没有匹配条目。</div>';
+    } else {
+      arr.slice().sort((a,b)=>(a.y||9999)-(b.y||9999)).forEach(x=>{
+        g+='<div class="it" data-i="'+D.indexOf(x)+'">'+itemHTML(x,terms)+'</div>';
+      });
+    }
+    $('#rlist').innerHTML=g; bindItems();
+  }
+}
+
+function renderCharView(){
+  const kw=q.trim().toLowerCase();
+  let names=[...new Set(D.flatMap(x=>x.chars||[]))].sort();
+  if(kw){
+    names=names.filter(n=>n.toLowerCase().includes(kw) ||
+      D.some(x=>match(x) && (x.chars||[]).includes(n)));
+  }
+  let h='<h2 class="sec">人物<small>'+names.length+' 位'+(kw?'（关键词：'+esc(q.trim())+'）':' · 点击查看详情')+'</small></h2>';
+  if(!names.length){
+    h+='<div class="empty">没有匹配的人物。<br>换个词试试，或切到「编年」搜事件。</div>';
+  } else {
+    h+='<div class="cc" style="gap:7px">';
+    names.forEach(n=>{ h+='<span data-c="'+esc(n)+'" style="padding:5px 11px;font-size:13px">'+esc(n)+'</span>'; });
+    h+='</div>';
+  }
+  $('#main').innerHTML=h;
+  $('#main').querySelectorAll('[data-c]').forEach(e=>{
+    e.addEventListener('click',()=>openChar(e.dataset.c));
+  });
+}
+
+
+function bk(kw){ return 'https://baike.baidu.com/search/word?word=' + encodeURIComponent(kw); }
+function openEvent(evText, x){
+  const d = ED[evText];
+  let h = '<div class="pname" style="font-size:17px">' + esc(evText) + '</div>';
+  h += '<div class="pinfo">所属：' + esc(x.t) + '　·　' + (x.y ? x.y + ' 年' : '年份不明') + '</div>';
+  h += '<div class="pdesc">' + (d ? esc(d) : ('该事件暂无独立说明。所属条目概述：' + esc(x.sum || ''))) + '</div>';
+  h += '<div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">';
+  h += '<a class="blibtn" href="' + bk(x.t) + '" target="_blank" rel="noopener">📖 百度百科：' + esc(x.t) + '</a>';
+  h += '<a class="blibtn ghost" href="' + bk(evText.replace(/[★☆\s]/g, '')) + '" target="_blank" rel="noopener">📖 按此事件搜百科</a>';
+  h += '</div>';
+  h += '<div class="src" style="margin-top:10px">百科入口用的是官方搜索跳转，词条不存在时会落到搜索结果页，不会 404。</div>';
+  document.getElementById('pbody').innerHTML = h;
+  document.getElementById('panel').classList.add('show');
+}
+
+function bindItems(){
+  document.querySelectorAll('.it').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      if(ev.target.dataset.e){ openEvent(ev.target.dataset.e, D[+el.dataset.i]); return; }
+      if(ev.target.dataset.c){ openChar(ev.target.dataset.c); return; }
+      el.classList.toggle('open');
+    });
+  });
+}
+
+function openChar(name){
+  const p=P[name]||{};
+  const rel=D.filter(x=>(x.chars||[]).includes(name));
+  let h='<div class="pname">'+esc(name)+'</div>';
+  h+='<div class="pinfo">'+(p.job||'信息待补')+'</div>';
+  const rows=[['种族',p.race],['出身',p.from],['职业',p.job],['阵营',p.faction]];
+  rows.forEach(([k,v])=>{ if(v&&v!=='—') h+='<div class="prow"><b>'+k+'</b><span>'+esc(v)+'</span></div>'; });
+  h+='<div class="pdesc">'+(p.desc?esc(p.desc):'本页暂无该角色的详细背景资料。')+'</div>';
+  h+='<div style="margin-top:14px"><a class="blibtn" href="'+bk(name)+'" target="_blank" rel="noopener">📖 百度百科：'+esc(name)+'</a></div>';
+  h+='<div class="lbl" style="margin-top:16px">相关条目（'+rel.length+'）</div><div class="pitems">';
+  rel.sort((a,b)=>(a.y||9999)-(b.y||9999)).forEach(x=>{
+    h+='<div data-t="'+esc(x.t)+'">'+esc(x.t)+'　<span style="color:var(--tx3)">'+(x.y?x.y+' 年':'年份不明')+'</span></div>';
+  });
+  h+='</div>';
+  $('#pbody').innerHTML=h;
+  $('#panel').classList.add('show');
+  $('#pbody').querySelectorAll('[data-t]').forEach(e=>{
+    e.addEventListener('click',()=>{ closeChar(); q=e.dataset.t; $('#q').value=q; view='chron'; setView(); render(); });
+  });
+}
+function closeChar(){ $('#panel').classList.remove('show'); }
+$('#pclose').addEventListener('click',closeChar);
+$('#panel').addEventListener('click',e=>{ if(e.target.id==='panel') closeChar(); });
+
+function render(){
+  if(view==='chron') renderChron();
+  else if(view==='region') renderRegion();
+  else renderCharView();
+  $('#hint').innerHTML = q ? '关键词：<b>'+esc(q)+'</b>　·　点条目展开，点人名看卡片'
+                           : '点条目展开详情；点人名看人物卡；上方切换视图。';
+}
+function setView(){
+  ['vChron','vRegion','vChar'].forEach(id=>$('#'+id).classList.remove('on'));
+  $('#'+(view==='chron'?'vChron':view==='region'?'vRegion':'vChar')).classList.add('on');
+}
+['vChron','vRegion','vChar'].forEach((id,i)=>{
+  $('#'+id).addEventListener('click',()=>{ view=['chron','region','char'][i]; setView(); render(); });
+});
+
+/* 类型 & 年份 chips */
+const tb=$('#types');
+[['all','全部'],['main','主线'],['ss','支线'],['story','故事集'],['is','肉鸽'],['lore','背景']].forEach(([id,nm])=>{
+  const b=document.createElement('div'); b.className='chip'+(id==='all'?' on':''); b.textContent=nm;
+  b.addEventListener('click',()=>{ type=id; [...tb.children].forEach(c=>c.classList.remove('on')); b.classList.add('on'); render(); });
+  tb.appendChild(b);
+});
+const yb=$('#years');
+ERAS.forEach(y=>{
+  const b=document.createElement('div'); b.className='chip'; b.textContent=y;
+  b.addEventListener('click',()=>{ q=String(y); $('#q').value=q; render(); });
+  yb.appendChild(b);
+});
+const bn=document.createElement('div'); bn.className='chip'; bn.textContent='年份不明';
+bn.addEventListener('click',()=>{ q='年份不明'; $('#q').value=q; render(); });
+yb.appendChild(bn);
+
+let t;
+$('#q').addEventListener('input',e=>{ q=e.target.value; clearTimeout(t); t=setTimeout(render,120); });
+$('#clr').addEventListener('click',()=>{ q=''; char=null; type='all'; $('#q').value='';
+  [...tb.children].forEach((c,i)=>c.classList.toggle('on',i===0)); render(); });
+
+setView(); render();
+</script>
+</body>
+</html>
