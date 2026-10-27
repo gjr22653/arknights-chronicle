@@ -119,6 +119,104 @@
     .wrap{padding:16px 12px 60px} h1{font-size:20px}
     .mt{width:100%;margin-left:0}
   }
+
+/* ==== AK DESIGN LAYER ==== */
+/* 细微网格底纹 */
+body{
+  background-image:
+    linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:46px 46px;
+}
+/* 标题下方斜切纹理条 */
+header{position:relative}
+header::after{
+  content:"";position:absolute;left:0;bottom:-2px;width:150px;height:3px;
+  background:repeating-linear-gradient(135deg,var(--acc) 0 1px,transparent 1px 5px);
+  opacity:.7;
+}
+h1{letter-spacing:.5px}
+.sub{letter-spacing:.2px}
+
+/* 工具栏：上角括线 */
+.toolbar::before,.toolbar::after{
+  content:"";position:absolute;top:7px;width:9px;height:9px;pointer-events:none;opacity:.55
+}
+.toolbar::before{left:0;border-left:1px solid var(--acc);border-top:1px solid var(--acc)}
+.toolbar::after{right:0;border-right:1px solid var(--acc);border-top:1px solid var(--acc)}
+
+/* 控制轨道：视图切换 ↔ 年份 之间的刻度线 */
+.rail{display:flex;align-items:center;gap:11px;margin:14px 0 6px;height:14px}
+.rail-tag{
+  font:10px/1 ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+  letter-spacing:.22em;color:var(--acc);border-left:2px solid var(--acc);
+  padding-left:7px;white-space:nowrap
+}
+.rail-line{flex:1;height:9px;position:relative;overflow:hidden;min-width:40px}
+.rail-line::after{
+  content:"";position:absolute;left:0;right:0;top:4px;height:1px;
+  background:repeating-linear-gradient(90deg,var(--line) 0 22px,transparent 22px 30px)
+}
+.rail-line::before{
+  content:"";position:absolute;top:0;bottom:0;width:58px;
+  background:linear-gradient(90deg,transparent,rgba(217,161,63,.5),transparent);
+  animation:akSweep 6.5s linear infinite
+}
+@keyframes akSweep{0%{left:-58px}100%{left:100%}}
+.rail-meta{
+  font:10px/1 ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+  letter-spacing:.16em;color:var(--tx3);white-space:nowrap
+}
+@media (max-width:560px){.rail-meta{display:none}}
+
+/* 按钮与芯片：直角化 + 选中左侧实心条 */
+.btn{border-radius:0;position:relative}
+.btn.on{box-shadow:inset 2px 0 0 rgba(19,22,25,.75)}
+.chip{border-radius:2px;position:relative;padding:4px 10px}
+.chip.on{border-radius:2px}
+#q{border-radius:0}
+
+/* 年份分节标题：菱形起点 + 细线下延 */
+h2.sec{position:relative;padding-left:0}
+h2.sec::before{
+  content:"";width:6px;height:6px;background:var(--acc);transform:rotate(45deg);
+  flex:none;margin-bottom:2px
+}
+h2.sec{border-bottom:none;padding-bottom:0;margin-bottom:14px}
+h2.sec::after{
+  content:"";position:absolute;left:0;right:0;bottom:-7px;height:1px;
+  background:linear-gradient(90deg,var(--acc) 0,var(--line) 18%,var(--line) 100%);
+  opacity:.9
+}
+h2.sec small{
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em
+}
+
+/* 条目卡：直角 + 悬停角括线 + 左侧短强调条 */
+.it{position:relative;border-radius:0;overflow:hidden}
+.it::before,.it::after{
+  content:"";position:absolute;width:8px;height:8px;opacity:0;transition:opacity .18s;pointer-events:none
+}
+.it::before{left:0;top:0;border-left:1px solid var(--acc);border-top:1px solid var(--acc)}
+.it::after{right:0;bottom:0;border-right:1px solid var(--acc);border-bottom:1px solid var(--acc)}
+.it:hover::before,.it:hover::after{opacity:.9}
+.it:hover{background-image:linear-gradient(90deg,rgba(217,161,63,.07),transparent 55%)}
+.it .l1 .k{border-radius:0}
+.it.open{background-image:linear-gradient(90deg,rgba(217,161,63,.05),transparent 45%)}
+
+/* 地区卡同样直角化 */
+.rcard{border-radius:0}
+.rcard:hover{background-image:linear-gradient(135deg,rgba(217,161,63,.07),transparent 60%)}
+
+/* 侧栏面板 */
+.pbox{border-left:1px solid var(--acc)}
+.pname{letter-spacing:.5px}
+a.blibtn{border-radius:0}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion:reduce){
+  .rail-line::before{animation:none;opacity:0}
+}
 </style>
 </head>
 <body>
@@ -145,6 +243,11 @@
     <button class="btn" id="clr">清除</button>
   </div>
   <div class="chips" id="types"></div>
+  <div class="rail" aria-hidden="true">
+    <span class="rail-tag">CHRONO</span>
+    <span class="rail-line"></span>
+    <span class="rail-meta">TA-LOG · REGION · INDEX</span>
+  </div>
   <div class="chips" id="years"></div>
   <div class="hint" id="hint">点条目展开详情；点人名看人物卡。</div>
 </div>
